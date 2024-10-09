@@ -81,11 +81,40 @@ if(isset($_POST['suatnp'])){
         header("Location: thunhapphu.php?msg=2");
     }
 }
-if(isset($_POST['xoatnp'])){
-    $id  = $_POST['id'];
-    $query = "DELETE FROM thunhapphu WHERE `id`='{$id}'";
-        $result = mysqli_query($connect, $query);
-        header("Location: thunhapphu.php?msg=1");
+if (isset($_POST['xoatnp'])) {
+    $id = $_POST['id'];
+    
+    // Lấy status hiện tại
+    $query = "SELECT status FROM thunhapphu WHERE id = '{$id}'";
+    $result = mysqli_query($connect, $query);
+    
+    if ($result && mysqli_num_rows($result) > 0) {
+        $row = mysqli_fetch_assoc($result);
+        $currentStatus = $row['status'];
+
+        // Cập nhật status dựa trên giá trị hiện tại
+        if ($currentStatus == 0) {
+            $updateQuery = "UPDATE thunhapphu SET status = -1 WHERE id = '{$id}'";
+        } else if ($currentStatus == -1) {
+            $updateQuery = "UPDATE thunhapphu SET status = 0 WHERE id = '{$id}'";
+        }
+
+        // Thực hiện cập nhật
+        if (isset($updateQuery)) {
+            $updateResult = mysqli_query($connect, $updateQuery);
+            if ($updateResult) {
+                header("Location: thunhapphu.php?msg=1");
+            } else {
+                header("Location: thunhapphu.php?msg=0"); // Thêm thông báo lỗi nếu cần
+            }
+        } else {
+            // Nếu không có cập nhật nào cần thiết
+            header("Location: thunhapphu.php?msg=0");
+        }
+    } else {
+        // Trường hợp không tìm thấy bản ghi
+        header("Location: thunhapphu.php?msg=0");
+    }
 }
 // Chi tiêu cố định
 if(isset($_POST['themctcd'])){
@@ -167,11 +196,40 @@ if(isset($_POST['suactps'])){
         header("Location: chitieuphatsinh.php?msg=2");
     }
 }
-if(isset($_POST['xoactps'])){
-    $id  = $_POST['id'];
-    $query = "DELETE FROM chitieuphatsinh WHERE `id`='{$id}'";
-        $result = mysqli_query($connect, $query);
-        header("Location: chitieuphatsinh.php?msg=1");
+if (isset($_POST['xoactps'])) {
+    $id = $_POST['id'];
+    
+    // Lấy status hiện tại
+    $query = "SELECT status FROM chitieuphatsinh WHERE id = '{$id}'";
+    $result = mysqli_query($connect, $query);
+    
+    if ($result && mysqli_num_rows($result) > 0) {
+        $row = mysqli_fetch_assoc($result);
+        $currentStatus = $row['status'];
+
+        // Cập nhật status dựa trên giá trị hiện tại
+        if ($currentStatus == 0) {
+            $updateQuery = "UPDATE chitieuphatsinh SET status = -1 WHERE id = '{$id}'";
+        } else if ($currentStatus == -1) {
+            $updateQuery = "UPDATE chitieuphatsinh SET status = 0 WHERE id = '{$id}'";
+        }
+
+        // Thực hiện cập nhật
+        if (isset($updateQuery)) {
+            $updateResult = mysqli_query($connect, $updateQuery);
+            if ($updateResult) {
+                header("Location: chitieuphatsinh.php?msg=1");
+            } else {
+                header("Location: chitieuphatsinh.php?msg=0");
+            }
+        } else {
+            // Nếu không có cập nhật nào cần thiết
+            header("Location: chitieuphatsinh.php?msg=0");
+        }
+    } else {
+        // Trường hợp không tìm thấy bản ghi
+        header("Location: chitieuphatsinh.php?msg=0");
+    }
 }
 // Khoản tiết kiệm
 if(isset($_POST['themktk'])){

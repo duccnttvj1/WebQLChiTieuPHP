@@ -12,16 +12,16 @@
     <?php include('inc/menu.php')?>
         <div id="layoutSidenav_content">
             <main>
-            <?php 
+                <div class="container-fluid px-4">
+                <?php 
                 $idad = $_SESSION['id'];
                 $sumtt = mysqli_query($connect, "SELECT SUM(sotien) as 'tongtien' 
-                FROM thunhapphu
-                WHERE taikhoan_id = $idad AND 'status' = 0
+                FROM chitieuphatsinh
+                WHERE taikhoan_id = $idad  AND 'status' = -1
                 ");
                 $artinhtt = mysqli_fetch_array($sumtt);
                 ?>
-                <div class="container-fluid px-4">
-                    <h1 class="mt-4">Danh sách khoản thu nhập phụ <span style="font-size : 60%"> (Tổng tiền : <?php echo number_format($artinhtt['tongtien']) ?> VND) </span></h1>
+                    <h1 class="mt-4">Danh sách chi tiêu phát sinh đã xóa<span style="font-size : 60%"> (Tổng tiền : <?php echo number_format($artinhtt['tongtien']) ?> VND) </span></h1>
                     <div class="card mb-4">
                         <div class="card-header">
                         <?php if (isset($_GET['msg'])){
@@ -31,13 +31,9 @@
                             </div>
                             <?php }  ?> 
                             <?php }  ?>   
-                            <button type="button" class="btn btn-success" data-bs-toggle="modal"
+                            <button onclick="document.location.href='./chitieuphatsinh.php'" type="button" class="btn btn-primary" data-bs-toggle="modal"
                                 data-bs-target="#exampleModalAdd">
-                                Thêm mới
-                            </button>
-                            <button onclick="document.location.href='./thunhapphudelete.php'" type="button" class="btn btn-danger" data-bs-toggle="modal"
-                                data-bs-target="#exampleModalAdd">
-                                Đã xóa
+                                Danh sách
                             </button>
                              
                         </div>
@@ -45,9 +41,9 @@
                             <table id="datatablesSimple">
                                 <thead>
                                 <tr style="background-color : #6D6D6D">
-                                        <th>STT</th>
+                                <th>STT</th>
                                         <th>Tên khoản</th>
-                                        <th>Loại thu nhập phụ</th>
+                                        <th>Loại chi tiêu phát sinh</th>
                                         <th>Số tiền</th>
                                         <th>Diễn giải</th>
                                         <th>Ngày</th>
@@ -57,12 +53,12 @@
                                 </thead>
                                 <tbody>
                                 <?php 
-                                   $idad = $_SESSION['id']; 
-                                   $query = "SELECT a.*,b.ten as tenloai 
-                                   FROM thunhapphu as a,loaithunhapphu as b
-                                    WHERE a.loaithunhapphu_id = b.id 
-                                    AND a.taikhoan_id = $idad AND status =0
-                                    ORDER BY a.id DESC";
+                                    $idad = $_SESSION['id']; 
+                                    $query = "SELECT a.*,b.ten as tenloai 
+                                    FROM chitieuphatsinh as a,loaichitieuphatsinh as b
+                                     WHERE a.loaichitieuphatsinh_id = b.id 
+                                     AND a.taikhoan_id = $idad AND a.status = -1
+                                     ORDER BY a.id DESC";
                                     $result = mysqli_query($connect, $query);
                                     $stt = 1;
                                     while ($arUser = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
@@ -78,13 +74,10 @@
                                         <td><?php echo date('d-m-Y',strtotime($arUser["ngay"])) ?></td>
                                         <td><?php echo $arUser["thoigian"] ?></td>
                                         <td>
-                                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                                data-bs-target="#<?php echo $idModelEdit ?>">
-                                                Sửa
-                                            </button>
-                                            <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                                        
+                                            <button type="button" class="btn btn-success" data-bs-toggle="modal"
                                                 data-bs-target="#<?php echo $idModelDel ?>">
-                                                Xóa
+                                                Khôi phục
                                             </button>
                                             
                                             <!--Dele-->
@@ -93,13 +86,13 @@
                                                 <div class="modal-dialog">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
-                                                            <h5 class="modal-title" id="exampleModalLabel">Bạn chắc chắn muốn xóa ?</h5>
+                                                            <h5 class="modal-title" id="exampleModalLabel">Bạn chắc chắn muốn khôi phục ?</h5>
                                                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                                     aria-label="Close"></button>
                                                         </div>
 
                                                         <div class="modal-body">
-                                                            Thu nhập : <?php echo $arUser["ten"] ?>
+                                                            Chi tiêu phát sinh đã xóa : <?php echo $arUser["ten"] ?>
                                                             <form action="function.php" method="post">
                                                                 <input type="hidden" class="form-control" id="id" name="id" value="<?php echo $arUser["id"] ?>">
                                                                 <div class="modal-footer" style="margin-top: 20px">
@@ -107,7 +100,7 @@
                                                                             data-bs-dismiss="modal">
                                                                         Đóng
                                                                     </button>
-                                                                    <button style="width:100px" type="submit" class="btn btn-danger" name="xoatnp"> Xóa</button>
+                                                                    <button style="width:100px" type="submit" class="btn btn-success" name="xoactps"> Khôi phục</button>
 
                                                                 </div>
 
@@ -144,12 +137,12 @@
                                                             </div>
                                                             <div class="col-6">
                                                                 <label for="category-film"
-                                                                    class="col-form-label">Loại thu nhập phụ:</label>
+                                                                    class="col-form-label">Loại chi tiêu phát sinh:</label>
                                                                     <select class="form-select" aria-label="Default select example" id="theloai" tabindex="8" name="loai" required>
                                                                         <?php
-                                                                        $lspud = mysqli_query($connect, "SELECT * FROM loaithunhapphu");
+                                                                        $lspud = mysqli_query($connect, "SELECT * FROM loaichitieuphatsinh");
                                                                         while ($arLspud = mysqli_fetch_array($lspud, MYSQLI_ASSOC)) {
-                                                                        if($arLspud['id'] == $arUser["loaithunhapphu_id"]){   
+                                                                        if($arLspud['id'] == $arUser["loaichitieuphatsinh_id"]){   
                                                                     ?>
                                                                     <option value="<?php echo $arLspud['id'] ?>" selected ><?php echo $arLspud['ten'] ?></option>
                                                                     <?php } else{ ?>
@@ -187,7 +180,7 @@
                                                         <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary"
                                                         data-bs-dismiss="modal">Đóng</button>
-                                                    <button type="submit" class="btn btn-primary" name="suatnp">Lưu</button>
+                                                    <button type="submit" class="btn btn-primary" name="suactps">Lưu</button>
                                                 </div>
                                                     </form>
                                                 </div>
@@ -218,11 +211,11 @@
                                                             </div>
                                                             <div class="col-6">
                                                                 <label for="category-film"
-                                                                    class="col-form-label">Loại thu nhập phụ:</label>
+                                                                    class="col-form-label">Loại chi tiêu phát sinh:</label>
                                                                     <select class="form-select" aria-label="Default select example" id="theloai" tabindex="8" name="loai" required>
-                                                                        <option value="" selected>Chọn loại thu nhập</option>
+                                                                        <option value="" selected>Chọn loại chi tiêu phát sinh</option>
                                                                         <?php
-                                                                        $lsp = mysqli_query($connect, "SELECT * FROM loaithunhapphu");
+                                                                        $lsp = mysqli_query($connect, "SELECT * FROM loaichitieuphatsinh");
                                                                         while ($arLsp = mysqli_fetch_array($lsp, MYSQLI_ASSOC)) {
                                                                         ?>
                                                                         <option value="<?php echo $arLsp['id'] ?>" ><?php echo $arLsp['ten'] ?></option>
@@ -258,7 +251,7 @@
                                                     <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary"
                                                         data-bs-dismiss="modal">Đóng</button>
-                                                    <button type="submit" class="btn btn-primary" name="themtnp">Lưu </button>
+                                                    <button type="submit" class="btn btn-primary" name="themctps">Lưu </button>
                                                 </div>
                                                     </form>
                                                 </div>

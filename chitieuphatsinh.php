@@ -17,7 +17,7 @@
                 $idad = $_SESSION['id'];
                 $sumtt = mysqli_query($connect, "SELECT SUM(sotien) as 'tongtien' 
                 FROM chitieuphatsinh
-                WHERE taikhoan_id = $idad
+                WHERE taikhoan_id = $idad  AND 'status' = 0
                 ");
                 $artinhtt = mysqli_fetch_array($sumtt);
                 ?>
@@ -35,7 +35,10 @@
                                 data-bs-target="#exampleModalAdd">
                                 Thêm mới
                             </button>
-                             
+                            <button onclick="document.location.href='./chitieuphatsinhdelete.php'" type="button" class="btn btn-danger" data-bs-toggle="modal"
+                                data-bs-target="#exampleModalAdd">
+                                Đã xóa
+                            </button>
                         </div>
                         <div class="card-body">
                             <table id="datatablesSimple">
@@ -57,7 +60,7 @@
                                     $query = "SELECT a.*,b.ten as tenloai 
                                     FROM chitieuphatsinh as a,loaichitieuphatsinh as b
                                      WHERE a.loaichitieuphatsinh_id = b.id 
-                                     AND a.taikhoan_id = $idad
+                                     AND a.taikhoan_id = $idad AND a.status = 0
                                      ORDER BY a.id DESC";
                                     $result = mysqli_query($connect, $query);
                                     $stt = 1;

@@ -1,6 +1,6 @@
 <?php
 
-$connect = mysqli_connect ('localhost', 'root', '', 'quanlychitieu') or die ('Không thể kết nối tới database');
+$connect = mysqli_connect ('localhost', 'root', '', 'qlct') or die ('Không thể kết nối tới database');
 mysqli_set_charset($connect, 'UTF8');
 
 if($connect === false){ 

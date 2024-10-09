@@ -1,5 +1,11 @@
-<?php include('inc/connect.php'); ?>
-<?php
+<?php include('inc/connect.php'); 
+$adminid = $_SESSION['id'];
+
+$query = "SELECT ten, avatar FROM taikhoan WHERE id = '$adminid'";
+$result = mysqli_query($connect, $query);
+$user = mysqli_fetch_assoc($result);
+print_r($user);
+
 if (empty($_SESSION['taikhoan'])) {
   header("Location: login.php");
 }?>
@@ -18,8 +24,11 @@ if (empty($_SESSION['taikhoan'])) {
         <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown"
-                    aria-expanded="false"><i class="fas fa-user fa-fw"></i>Xin chào, <?php echo $_SESSION['ten'] ?></a>
+                    aria-expanded="false">
+                    <img src="<?php echo htmlspecialchars($user['avatar']); ?>" alt="Avatar" style="width: 30px; height: 30px; border-radius: 50%;">
+                    Xin chào, <?php echo htmlspecialchars($_SESSION['ten']); ?>                </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="info.php">Cập nhật thông tin</a></li>
                     <li><a class="dropdown-item" href="logout.php">Đăng xuất</a></li>
                 </ul>
             </li>

@@ -16,12 +16,12 @@
                 $idad = $_SESSION['id'];
                 $sumtt = mysqli_query($connect, "SELECT SUM(sotien) as 'tongtien' 
                 FROM thunhapphu
-                WHERE taikhoan_id = $idad AND 'status' = 0
+                WHERE taikhoan_id = $idad AND status = -1
                 ");
                 $artinhtt = mysqli_fetch_array($sumtt);
                 ?>
                 <div class="container-fluid px-4">
-                    <h1 class="mt-4">Danh sách khoản thu nhập phụ <span style="font-size : 60%"> (Tổng tiền : <?php echo number_format($artinhtt['tongtien']) ?> VND) </span></h1>
+                    <h1 class="mt-4">Danh sách khoản thu nhập phụ đã xóa <span style="font-size : 60%"> (Tổng tiền : <?php echo number_format($artinhtt['tongtien']) ?> VND) </span></h1>
                     <div class="card mb-4">
                         <div class="card-header">
                         <?php if (isset($_GET['msg'])){
@@ -31,13 +31,9 @@
                             </div>
                             <?php }  ?> 
                             <?php }  ?>   
-                            <button type="button" class="btn btn-success" data-bs-toggle="modal"
+                            <button onclick="document.location.href='./thunhapphu.php'" type="button" class="btn btn-primary" data-bs-toggle="modal"
                                 data-bs-target="#exampleModalAdd">
-                                Thêm mới
-                            </button>
-                            <button onclick="document.location.href='./thunhapphudelete.php'" type="button" class="btn btn-danger" data-bs-toggle="modal"
-                                data-bs-target="#exampleModalAdd">
-                                Đã xóa
+                                Danh sách
                             </button>
                              
                         </div>
@@ -61,7 +57,7 @@
                                    $query = "SELECT a.*,b.ten as tenloai 
                                    FROM thunhapphu as a,loaithunhapphu as b
                                     WHERE a.loaithunhapphu_id = b.id 
-                                    AND a.taikhoan_id = $idad AND status =0
+                                    AND a.taikhoan_id = $idad AND status = -1
                                     ORDER BY a.id DESC";
                                     $result = mysqli_query($connect, $query);
                                     $stt = 1;
@@ -78,13 +74,10 @@
                                         <td><?php echo date('d-m-Y',strtotime($arUser["ngay"])) ?></td>
                                         <td><?php echo $arUser["thoigian"] ?></td>
                                         <td>
-                                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                                data-bs-target="#<?php echo $idModelEdit ?>">
-                                                Sửa
-                                            </button>
-                                            <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                                       
+                                            <button type="button" class="btn btn-success" data-bs-toggle="modal"
                                                 data-bs-target="#<?php echo $idModelDel ?>">
-                                                Xóa
+                                                Cập nhật
                                             </button>
                                             
                                             <!--Dele-->
@@ -93,7 +86,7 @@
                                                 <div class="modal-dialog">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
-                                                            <h5 class="modal-title" id="exampleModalLabel">Bạn chắc chắn muốn xóa ?</h5>
+                                                            <h5 class="modal-title" id="exampleModalLabel">Bạn chắc chắn khôi phục  ?</h5>
                                                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                                     aria-label="Close"></button>
                                                         </div>
@@ -107,7 +100,7 @@
                                                                             data-bs-dismiss="modal">
                                                                         Đóng
                                                                     </button>
-                                                                    <button style="width:100px" type="submit" class="btn btn-danger" name="xoatnp"> Xóa</button>
+                                                                    <button style="width:100px" type="submit" class="btn btn-success" name="xoatnp"> Khôi phục</button>
 
                                                                 </div>
 
